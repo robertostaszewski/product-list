@@ -11,19 +11,19 @@ public class Product {
         this.name = name;
     }
 
-    public ProductListId getShoppingListId() {
-        return productListId;
-    }
-
     public ProductId getProductId() {
         return productId;
+    }
+
+    public ProductListId getProductListId() {
+        return productListId;
     }
 
     public String getName() {
         return name;
     }
 
-    public static Product of(ProductListId productListId, String name) {
+    static Product of(ProductListId productListId, String name) {
         return new Product(ProductId.random(), productListId, name);
     }
 

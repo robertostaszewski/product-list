@@ -1,5 +1,6 @@
 package com.product.productlist.presenters;
 
+import com.product.productlist.entity.Username;
 import com.product.productlist.presenters.dto.ProductDetails;
 import com.product.productlist.presenters.dto.ProductListDetails;
 import com.product.productlist.entity.ProductListId;
@@ -21,21 +22,21 @@ public class ProductListPresenter implements ListPresenter {
     @Override
     public ProductListDetails getListDetails(ProductListId productListId) {
         return productListRepository.get(productListId)
-                .map(shoppingList -> new ProductListDetails(shoppingList.getProductListId().getId(), shoppingList.getName()))
+                .map(shoppingList -> new ProductListDetails(shoppingList.getProductListId().asString(), shoppingList.getName()))
                 .orElseThrow(() -> new RuntimeException("List does not exists"));
     }
 
     @Override
-    public List<ProductListDetails> getAllLists() {
-        return productListRepository.getAll().stream()
-                .map(shoppingList -> new ProductListDetails(shoppingList.getProductListId().getId(), shoppingList.getName()))
+    public List<ProductListDetails> getAllListsForUser(Username username) {
+        return productListRepository.getAllForUser(username).stream()
+                .map(shoppingList -> new ProductListDetails(shoppingList.getProductListId().asString(), shoppingList.getName()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<ProductDetails> getProductsForList(ProductListId productListId) {
         return productRepository.getAllForList(productListId).stream()
-                .map(product -> new ProductDetails(product.getShoppingListId().getId(), product.getProductId().getId(), product.getName()))
+                .map(product -> new ProductDetails(product.getProductListId().asString(), product.getProductId().asString(), product.getName()))
                 .collect(Collectors.toList());
     }
 }

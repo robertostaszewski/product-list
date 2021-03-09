@@ -7,7 +7,7 @@ public abstract class Id {
         this.id = id;
     }
 
-    public String getId() {
+    public String asString() {
         return id;
     }
 

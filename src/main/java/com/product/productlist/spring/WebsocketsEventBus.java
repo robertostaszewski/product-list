@@ -15,21 +15,21 @@ public class WebsocketsEventBus implements EventBus {
 
     @Override
     public void listCreated(ProductList productList) {
-        template.convertAndSend("/topic/me", productList.getProductListId().getId());
+        template.convertAndSend("/topic/me", productList.getProductListId().asString());
     }
 
     @Override
     public void listRemoved(ProductList productList) {
-        template.convertAndSend("/topic/me", productList.getProductListId().getId());
+        template.convertAndSend("/topic/me", productList.getProductListId().asString());
     }
 
     @Override
     public void productAdded(Product product) {
-        template.convertAndSend("/topic/" + product.getShoppingListId().getId(), "product_added");
+        template.convertAndSend("/topic/" + product.getProductListId().asString(), "product_added");
     }
 
     @Override
     public void productRemoved(Product product) {
-        template.convertAndSend("/topic/" + product.getShoppingListId().getId(), "product_removed");
+        template.convertAndSend("/topic/" + product.getProductListId().asString(), "product_removed");
     }
 }
