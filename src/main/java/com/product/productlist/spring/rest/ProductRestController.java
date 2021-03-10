@@ -6,8 +6,7 @@ import com.product.productlist.entity.Username;
 import com.product.productlist.presenters.ListPresenter;
 import com.product.productlist.presenters.dto.ProductDetails;
 import com.product.productlist.presenters.dto.ProductListDetails;
-import com.product.productlist.services.ListService;
-import com.product.productlist.services.SharingService;
+import com.product.productlist.services.ListsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
@@ -18,13 +17,11 @@ import java.util.List;
 @CrossOrigin
 public class ProductRestController {
     private final ListPresenter listPresenter;
-    private final ListService listService;
-    private final SharingService sharingService;
+    private final ListsService listsService;
 
-    public ProductRestController(ListPresenter listPresenter, ListService listService, SharingService sharingService) {
+    public ProductRestController(ListPresenter listPresenter, ListsService listsService) {
         this.listPresenter = listPresenter;
-        this.listService = listService;
-        this.sharingService = sharingService;
+        this.listsService = listsService;
     }
 
     @GetMapping("/rest/lists/{listId}")
@@ -34,7 +31,12 @@ public class ProductRestController {
 
     @GetMapping("/rest/lists")
     public List<ProductListDetails> getAllListDetails(Principal principal) {
-        return listPresenter.getAllListsForUser(Username.from(principal.getName()));
+        return listPresenter.getAllListsFor(Username.from(principal.getName()));
+    }
+
+    @GetMapping("/rest/lists/shared")
+    public List<ProductListDetails> getAllSharedListDetails(Principal principal) {
+        return listPresenter.getAllListsSharedWith(Username.from(principal.getName()));
     }
 
     @GetMapping("/rest/lists/{listId}/products")
@@ -44,26 +46,26 @@ public class ProductRestController {
 
     @PutMapping("/rest/lists/{listId}")
     public void addProduct(@PathVariable("listId") String listId, @PathParam("productName") String productName) {
-        listService.addProduct(ProductListId.from(listId), productName);
+        listsService.addProduct(ProductListId.from(listId), productName);
     }
 
     @DeleteMapping("/rest/lists/{listId}/{productId}")
     public void deleteProduct(@PathVariable("listId") String listId, @PathVariable("productId") String productId) {
-        listService.removeProduct(ProductId.from(productId));
+        listsService.removeProduct(ProductId.from(productId));
     }
 
     @PutMapping("/rest/lists")
     public void addList(@PathParam("listName") String listName, Principal principal) {
-        listService.createList(listName, Username.from(principal.getName()));
+        listsService.createList(listName, Username.from(principal.getName()));
     }
 
     @DeleteMapping("/rest/lists/{listId}")
     public void deleteList(@PathVariable("listId") String listId) {
-        listService.removeList(ProductListId.from(listId));
+        listsService.removeList(ProductListId.from(listId));
     }
 
     @PostMapping("/rest/lists/{listId}")
     public void shareList(@PathVariable("listId") String listId, @PathParam("userId") String userId) {
-        sharingService.shareListWith(ProductListId.from(listId), Username.from(userId));
+        listsService.shareListWith(ProductListId.from(listId), Username.from(userId));
     }
 }

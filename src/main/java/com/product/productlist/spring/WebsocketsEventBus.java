@@ -2,6 +2,7 @@ package com.product.productlist.spring;
 
 import com.product.productlist.entity.Product;
 import com.product.productlist.entity.ProductList;
+import com.product.productlist.entity.SharingEntry;
 import com.product.productlist.services.EventBus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
@@ -31,5 +32,10 @@ public class WebsocketsEventBus implements EventBus {
     @Override
     public void productRemoved(Product product) {
         template.convertAndSend("/topic/" + product.getProductListId().asString(), "product_removed");
+    }
+
+    @Override
+    public void listShared(SharingEntry entry) {
+
     }
 }

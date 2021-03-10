@@ -5,7 +5,7 @@ import com.product.productlist.entity.ProductList;
 
 public class SimpleProductFactory implements ProductFactory {
     @Override
-    public Product newProduct(ProductList productList, String productName) {
+    public Product newProduct(String productName, ProductList productList) {
         return productList.addProduct(productName);
     }
 }

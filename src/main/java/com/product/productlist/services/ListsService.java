@@ -4,7 +4,7 @@ import com.product.productlist.entity.ProductId;
 import com.product.productlist.entity.ProductListId;
 import com.product.productlist.entity.Username;
 
-public interface ListService {
+public interface ListsService {
 
     void createList(String name, Username owner);
 
@@ -14,4 +14,5 @@ public interface ListService {
 
     void removeList(ProductListId productListId);
 
+    void shareListWith(ProductListId productListId, Username username);
 }

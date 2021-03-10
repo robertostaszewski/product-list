@@ -1,8 +1,6 @@
 package com.product.productlist.repository;
 
-import com.product.productlist.entity.SharingEntry;
-import com.product.productlist.entity.SharingEntryId;
-import com.product.productlist.entity.Username;
+import com.product.productlist.entity.*;
 
 import java.util.List;
 
@@ -10,5 +8,7 @@ public interface SharingEntryRepository extends Repository<SharingEntry, Sharing
 
     boolean isAlreadyShared(SharingEntry sharingEntry);
 
-    List<SharingEntry> getEntriesFor(Username username);
+    List<SharingEntry> getAllForUser(Username username);
+
+    List<SharingEntry> getAllForList(ProductListId productListId);
 }

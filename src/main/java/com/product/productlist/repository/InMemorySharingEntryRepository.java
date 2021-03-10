@@ -1,5 +1,6 @@
 package com.product.productlist.repository;
 
+import com.product.productlist.entity.ProductListId;
 import com.product.productlist.entity.SharingEntry;
 import com.product.productlist.entity.SharingEntryId;
 import com.product.productlist.entity.Username;
@@ -14,13 +15,21 @@ public class InMemorySharingEntryRepository extends InMemoryRepository<SharingEn
 
     @Override
     public boolean isAlreadyShared(SharingEntry sharingEntry) {
-        return getAll().stream().anyMatch(se -> se.getProductListId().equals(sharingEntry.getProductListId()) && se.getUsername().equals(sharingEntry.getUsername()));
+        return getAll().stream()
+                .anyMatch(se -> se.getProductListId().equals(sharingEntry.getProductListId()) && se.getUsername().equals(sharingEntry.getUsername()));
     }
 
     @Override
-    public List<SharingEntry> getEntriesFor(Username username) {
+    public List<SharingEntry> getAllForUser(Username username) {
         return getAll().stream()
                 .filter(sharingEntry -> sharingEntry.getUsername().equals(username))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SharingEntry> getAllForList(ProductListId productListId) {
+        return getAll().stream()
+                .filter(sharingEntry -> sharingEntry.getProductListId().equals(productListId))
                 .collect(Collectors.toList());
     }
 }

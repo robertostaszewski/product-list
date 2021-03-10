@@ -10,7 +10,9 @@ import java.util.List;
 public interface ListPresenter {
     ProductListDetails getListDetails(ProductListId productListId);
 
-    List<ProductListDetails> getAllListsForUser(Username username);
+    List<ProductListDetails> getAllListsFor(Username username);
+
+    List<ProductListDetails> getAllListsSharedWith(Username username);
 
     List<ProductDetails> getProductsForList(ProductListId productListId);
 }

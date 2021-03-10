@@ -9,11 +9,11 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Optional;
 
-public class Checker {
+public class SecurityGuard {
     private final ProductListRepository productListRepository;
     private final SharingEntryRepository sharingEntryRepository;
 
-    public Checker(ProductListRepository productListRepository, SharingEntryRepository sharingEntryRepository) {
+    public SecurityGuard(ProductListRepository productListRepository, SharingEntryRepository sharingEntryRepository) {
         this.productListRepository = productListRepository;
         this.sharingEntryRepository = sharingEntryRepository;
     }
@@ -33,7 +33,7 @@ public class Checker {
     public boolean isListSharedWith(Authentication authentication, String listId) {
         Username username = Username.from(authentication.getName());
 
-        return sharingEntryRepository.getEntriesFor(username).stream()
+        return sharingEntryRepository.getAllForUser(username).stream()
                 .anyMatch(sharingEntry -> sharingEntry.getProductListId().equals(ProductListId.from(listId)));
     }
 }

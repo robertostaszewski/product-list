@@ -4,8 +4,10 @@ import com.product.productlist.entity.Product;
 import com.product.productlist.entity.ProductId;
 import com.product.productlist.entity.ProductListId;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InMemoryProductRepository extends InMemoryRepository<Product, ProductId> implements ProductRepository {
 
@@ -18,6 +20,7 @@ public class InMemoryProductRepository extends InMemoryRepository<Product, Produ
         return getAll().stream()
                 .anyMatch(p -> p.getName().equals(product.getName())
                         && p.getProductListId().equals(product.getProductListId()));
+
     }
 
     @Override

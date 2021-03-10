@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,8 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/gs-guide-websocket/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/rest/lists/{listId}/**").access("@checker.isOwnerOfTheList(authentication,#listId)")
-                .antMatchers("/rest/lists/{listId}/**").access("@checker.isOwnerOfTheList(authentication,#listId) or @checker.isListSharedWith(authentication,#listId)")
+                .antMatchers(HttpMethod.DELETE, "/rest/lists/{listId}/**").access("@securityGuard.isOwnerOfTheList(authentication,#listId)")
+                .antMatchers("/rest/lists/{listId}/**").access("@securityGuard.isOwnerOfTheList(authentication,#listId) or @securityGuard.isListSharedWith(authentication,#listId)")
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
@@ -50,8 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new MyUserDetailsService(userRepository);
     }
 
-    @Bean("checker")
-    public Checker getWebSecurity(ProductListRepository productListRepository, SharingEntryRepository sharingEntryRepository) {
-        return new Checker(productListRepository, sharingEntryRepository);
+    @Bean("securityGuard")
+    public SecurityGuard securityGuard(ProductListRepository productListRepository, SharingEntryRepository sharingEntryRepository) {
+        return new SecurityGuard(productListRepository, sharingEntryRepository);
     }
 }

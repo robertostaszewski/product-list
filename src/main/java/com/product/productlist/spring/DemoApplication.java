@@ -21,14 +21,32 @@ public class DemoApplication implements CommandLineRunner {
 	private ListPresenter listPresenter;
 
 	@Autowired
-	private ListService listService;
+	private ListsService listsService;
 
 	@Autowired
 	private UserRepository userRepository;
 
 	@Bean
-	public ListService listService(SimpMessagingTemplate template) {
-		return new ProductListService(getListRepository(), getProductRepository(), getEventBus(template), productListFactory(), productFactory());
+	public ListsService listService(ProductListService productListService,
+									ProductService productService,
+									SharingService sharingService,
+									EventBus eventBus) {
+		return new NotifyOnSuccessListsService(productListService, productService, sharingService, eventBus);
+	}
+
+	@Bean
+	public ProductListService productListService(ProductListRepository productListRepository) {
+		return new RepoProductListService(productListRepository, new SimpleProductListFactory());
+	}
+
+	@Bean
+	public ProductService productService(ProductRepository productRepository) {
+		return new RepoProductService(productRepository, new SimpleProductFactory());
+	}
+
+	@Bean
+	public SharingService sharingService(SharingEntryRepository sharingEntryRepository) {
+		return new RepoSharingService(sharingEntryRepository, new SimpleSharingEntryFactory());
 	}
 
 	@Bean
@@ -52,28 +70,15 @@ public class DemoApplication implements CommandLineRunner {
 	}
 
 	@Bean
-	public SharingService sharingService() {
-		return new ProductListSharingService(getListRepository(), new SimpleSharingEntryFactory(), sharingEntryRepository());
-	}
-
-	@Bean
 	public EventBus getEventBus(SimpMessagingTemplate template) {
 		return new WebsocketsEventBus(template);
 	}
 
 	@Bean
-	public ListPresenter listViewer() {
-		return new ProductListPresenter(getListRepository(), getProductRepository());
-	}
-
-	@Bean
-	public ProductFactory productFactory() {
-		return new SimpleProductFactory();
-	}
-
-	@Bean
-	public ProductListFactory productListFactory() {
-		return new SimpleProductListFactory();
+	public ListPresenter listPresenter(ProductListService productListService,
+									   ProductService productService,
+									   SharingService sharingService) {
+		return new ProductListPresenter(productListService, productService, sharingService);
 	}
 
 	public static void main(String[] args) {
@@ -87,25 +92,25 @@ public class DemoApplication implements CommandLineRunner {
 		userRepository.save(new User(username1));
 		userRepository.save(new User(username2));
 
-		this.listService.createList("Lista zakupowa", username1);
-		this.listService.createList("Lista zakupowa", username2);
-		this.listService.createList("Lista na zakupy", username1);
-		this.listPresenter.getAllListsForUser(username1).subList(0, 1).forEach(listDetails -> {
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "mleko");
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "jajka");
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "mąka");
+		this.listsService.createList("Lista zakupowa", username1);
+		this.listsService.createList("Lista zakupowa", username2);
+		this.listsService.createList("Lista na zakupy", username1);
+		this.listPresenter.getAllListsFor(username1).subList(0, 1).forEach(listDetails -> {
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "mleko");
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "jajka");
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "mąka");
 		});
 
-		this.listPresenter.getAllListsForUser(username1).subList(1, 2).forEach(listDetails -> {
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "mleko");
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "jajka");
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "mąka");
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "woda");
-			this.listService.addProduct(ProductListId.from(listDetails.getId()), "ziemniaki");
+		this.listPresenter.getAllListsFor(username1).subList(1, 2).forEach(listDetails -> {
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "mleko");
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "jajka");
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "mąka");
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "woda");
+			this.listsService.addProduct(ProductListId.from(listDetails.getId()), "ziemniaki");
 		});
 
-		listPresenter.getAllListsForUser(username2).forEach(list -> {
-			listService.addProduct(ProductListId.from(list.getId()), "woda");
+		listPresenter.getAllListsFor(username2).forEach(list -> {
+			listsService.addProduct(ProductListId.from(list.getId()), "woda");
 		});
 	}
 }
