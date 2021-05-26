@@ -1,6 +1,7 @@
 package com.products.Products.list.service;
 
-public interface ListService {
+import com.products.Products.list.commands.CommandExecutor;
 
-    <T> T execute(Command<T> command);
+public interface ListService extends CommandExecutor {
+
 }

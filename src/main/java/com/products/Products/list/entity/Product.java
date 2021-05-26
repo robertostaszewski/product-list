@@ -1,5 +1,8 @@
 package com.products.Products.list.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +15,7 @@ public class Product {
     private String description;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ProductList productList;
 
     public Product() {
@@ -19,6 +23,14 @@ public class Product {
 
     public Product(String description, ProductList productList) {
         this.description = description;
+        this.productList = productList;
+    }
+
+    public ProductList getProductList() {
+        return productList;
+    }
+
+    public void setProductList(ProductList productList) {
         this.productList = productList;
     }
 

@@ -1,4 +1,4 @@
-package com.products.Products.list.service;
+package com.products.Products.list.pubsub;
 
 public interface Publisher {
     void ping();

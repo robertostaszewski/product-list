@@ -1,4 +1,4 @@
-package com.products.Products.list.service;
+package com.products.Products.list.pubsub;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -24,9 +24,6 @@ public class SseSubscriber implements Subscriber {
     @Override
     public void subscribe(Publisher publisher) {
         publisher.register(this);
-        sseEmitter.onCompletion(() -> {
-            System.out.println("remove" + this);
-            publisher.remove(this);
-        });
+        sseEmitter.onCompletion(() -> publisher.remove(this));
     }
 }

@@ -1,4 +1,4 @@
-package com.products.Products.list.service;
+package com.products.Products.list.pubsub;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
